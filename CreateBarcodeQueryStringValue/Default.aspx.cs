@@ -14,34 +14,35 @@ namespace CreateBarcodeQueryStringValue
     public partial class _Default : Page
     {
         protected void Page_Load(object sender, EventArgs e)
-        {            
+        {
             string barCode = Request.QueryString["Barcode"];
             if (!string.IsNullOrWhiteSpace(barCode))
-            {            
-            using (Bitmap bitMap = new Bitmap(barCode.Length * 20, 80))
             {
-                using (Graphics graphics = Graphics.FromImage(bitMap))
+                using (Bitmap bitMap = new Bitmap(barCode.Length * 20, 80))
                 {
-                    Font oFont = new Font("IDAutomationHC39M Free Version", 16);
-                    PointF point = new PointF(2f, 2f);
-                    SolidBrush blackBrush = new SolidBrush(Color.Black);
-                    SolidBrush whiteBrush = new SolidBrush(Color.White);
-                    graphics.FillRectangle(whiteBrush, 0, 0, bitMap.Width, bitMap.Height);
-                    graphics.DrawString(barCode, oFont, blackBrush, point);
-                }
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    bitMap.Save(ms, ImageFormat.Png);
-                    imgBarcode.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
-                    imgBarcode.Visible = true;
+                    using (Graphics graphics = Graphics.FromImage(bitMap))
+                    {
+                        Font oFont = new Font("IDAutomationHC39M Free Version", 16);
+                        PointF point = new PointF(2f, 2f);
+                        SolidBrush blackBrush = new SolidBrush(Color.Black);
+                        SolidBrush whiteBrush = new SolidBrush(Color.White);
+                        graphics.FillRectangle(whiteBrush, 0, 0, bitMap.Width, bitMap.Height);
+                        graphics.DrawString(barCode, oFont, blackBrush, point);
+                    }
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        bitMap.Save(ms, ImageFormat.Png);
+                        imgBarcode.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
+                        imgBarcode.Visible = true;
 
                         Response.ContentType = "image/png";
                         byte[] data = ms.ToArray();
                         Response.OutputStream.Write(data, 0, data.Length);
                         Response.OutputStream.Flush();
                         Response.End();
+
+                    }
                 }
-            }
 
             }
         }
